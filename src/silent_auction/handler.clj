@@ -1,11 +1,16 @@
 (ns silent-auction.handler
-  (:use compojure.core)
+  (:use compojure.core
+        hiccup.bootstrap.middleware)
   (:require [compojure.handler :as handler]
-            [compojure.route :as route]))
+            [compojure.route :as route]
+            [silent-auction.views.admin :as admin-views]
+            [silent-auction.models.items :as items]))
 
 (defroutes app-routes
-  (GET "/" [] "Hello World")
+  (GET "/" [] (admin-views/items (items/all)))
   (route/not-found "Not Found"))
 
 (def app
-  (handler/site app-routes))
+  (-> app-routes
+    wrap-bootstrap-resources
+    handler/site))
