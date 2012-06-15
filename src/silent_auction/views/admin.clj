@@ -1,7 +1,8 @@
 (ns silent-auction.views.admin
   (:use hiccup.core
         hiccup.page
-        hiccup.bootstrap.page))
+        hiccup.bootstrap.page)
+  (:require [clojure.string :as string]))
 
 (defn navbar []
   (html
@@ -27,7 +28,12 @@
       (navbar)
       [:div.container content]]))
 
-(defn item-row [{:keys [complete
+(defn- city-state-zip
+  [city state zip]
+  (let [city-state (string/join ", " (remove nil? [city state]))]
+    (string/join " " (remove string/blank? [city-state zip]))))
+
+(defn- item-row [{:keys [complete
                         category
                         item
                         description
@@ -47,7 +53,7 @@
     [:td donor-name]
     [:td name-for-listing]
     [:td address]
-    [:td (str city ", " state " " zip)]
+    [:td (city-state-zip city state zip)]
     [:td solicited-by]
     [:td fair-market-value]])
 
