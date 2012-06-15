@@ -4,10 +4,10 @@
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [silent-auction.views.admin :as admin-views]
-            [silent-auction.models.items :as items]))
+            [silent-auction.models.db :as db]))
 
 (defroutes app-routes
-  (GET "/" [] (admin-views/items (items/all)))
+  (GET "/" [] (db/select-items admin-views/items))
   (route/not-found "Not Found"))
 
 (def app
