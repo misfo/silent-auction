@@ -24,7 +24,7 @@
     [:head
       [:title "CHA Silent Auction admin"]
       (include-bootstrap)
-      [:style "body {padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */ }"]]
+      (include-css "/css/silent-auction.css")]
     [:body
       (navbar)
       [:div.container content]]))
@@ -37,19 +37,11 @@
 (defn- item-row [{:keys [complete
                          category
                          item
-                         donor-name
-                         name-for-listing
-                         city
-                         state
-                         zip
                          solicited-by
                          fair-market-value]}]
   [complete
    category
    item
-   donor-name
-   name-for-listing
-   (city-state-zip city state zip)
    solicited-by
    fair-market-value
    '([:p [:a.btn.btn-small {:href "#"} [:i.icon-pencil] " Edit"]]
@@ -62,9 +54,6 @@
            :head ["Item Complete?"
                   "Category"
                   "Item"
-                  "Donor Name"
-                  "Name for Listing"
-                  "City, State, Zip"
                   "Solicited by"
                   "Fair Mkt. Value"
                   "Actions"]

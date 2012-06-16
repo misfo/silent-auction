@@ -8,6 +8,7 @@
 
 (defroutes app-routes
   (GET "/" [] (db/select-items admin-views/items))
+  (route/resources "/")
   (route/not-found "Not Found"))
 
 (def app
