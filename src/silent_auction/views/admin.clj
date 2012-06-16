@@ -2,7 +2,8 @@
   (:use hiccup.core
         hiccup.page
         hiccup.bootstrap.element
-        hiccup.bootstrap.page)
+        hiccup.bootstrap.page
+        [silent-auction.handler :only [admin-root]])
   (:require [clojure.string :as str]))
 
 (defn navbar []
@@ -14,10 +15,10 @@
             [:span.icon-bar]
             [:span.icon-bar]
             [:span.icon-bar]]
-          [:a.brand {:href "#"} "CHA Silent Auction"]
+          [:a.brand {:href admin-root} "CHA Silent Auction"]
           [:div.nav-collapse
             [:ul.nav
-              [:li.active [:a {:href "/"} "Items"]]]]]]]))
+              [:li.active [:a {:href admin-root} "Items"]]]]]]]))
 
 (defn layout [& content]
   (html5
