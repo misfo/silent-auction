@@ -22,7 +22,7 @@
 (defn layout [& content]
   (html5
     [:head
-      [:title "Bootstrapped Example"]
+      [:title "CHA Silent Auction admin"]
       (include-bootstrap)
       [:style "body {padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */ }"]]
     [:body
@@ -37,10 +37,8 @@
 (defn- item-row [{:keys [complete
                          category
                          item
-                         description
                          donor-name
                          name-for-listing
-                         address
                          city
                          state
                          zip
@@ -49,13 +47,13 @@
   [complete
    category
    item
-   description
    donor-name
    name-for-listing
-   address
    (city-state-zip city state zip)
    solicited-by
-   fair-market-value])
+   fair-market-value
+   '([:p [:a.btn.btn-small {:href "#"} [:i.icon-pencil] " Edit"]]
+     [:p [:a.btn.btn-small {:href "#"} [:i.icon-arrow-up] " Upload"]])])
 
 (defn items [itms]
   (layout
@@ -64,11 +62,10 @@
            :head ["Item Complete?"
                   "Category"
                   "Item"
-                  "Description"
                   "Donor Name"
                   "Name for Listing"
-                  "Address"
                   "City, State, Zip"
                   "Solicited by"
-                  "Fair Mkt. Value"]
+                  "Fair Mkt. Value"
+                  "Actions"]
            :body (map item-row itms))))
