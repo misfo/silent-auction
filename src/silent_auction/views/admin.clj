@@ -3,7 +3,7 @@
         hiccup.page
         hiccup.bootstrap.element
         hiccup.bootstrap.page
-        [silent-auction.handler :only [admin-root]])
+        [silent-auction.urls :only [admin-root]])
   (:require [clojure.string :as str]))
 
 (defn navbar []

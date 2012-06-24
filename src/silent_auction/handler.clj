@@ -4,17 +4,16 @@
   (:require [ring.util.response :as response]
             [compojure.handler :as handler]
             [compojure.route :as route]
+            [silent-auction.urls :as urls]
             [silent-auction.views.admin :as admin-views]
             [silent-auction.models.db :as db]))
-
-(def admin-root "/admin")
 
 (defroutes admin-routes
   (GET "/" [] (db/select-items admin-views/items)))
 
 (defroutes app-routes
-  (GET "/" [] (response/redirect admin-root))
-  (context admin-root [] admin-routes)
+  (GET "/" [] (response/redirect urls/admin-root))
+  (context urls/admin-root [] admin-routes)
   (route/resources "/")
   (route/not-found "Not Found"))
 
