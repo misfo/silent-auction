@@ -4,6 +4,7 @@
         hiccup.bootstrap.element
         hiccup.bootstrap.page)
   (:require [clojure.string :as str]
+            [silent-auction.models.db :as db]
             [silent-auction.urls :as urls]))
 
 (defn navbar []
@@ -78,7 +79,7 @@
         (control-group "Item Complete?"
           [:input.input-xlarge {:type "text" :value (:complete it)}])
         (control-group "Category"
-          [:select [:option "CATEGORY HERE"]])
+          [:select (map #(vector :option %) db/categories)])
         (control-group "Solicited by"
           [:input.input-xlarge {:type "text" :value (:solicited-by it)}])
         (control-group "Fair Market Value"

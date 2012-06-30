@@ -18,6 +18,12 @@
       ["SELECT * FROM items WHERE id = ?" (Integer/parseInt id)]
       (first items))))
 
+(def categories
+  (sql/with-connection connection
+    (sql/with-query-results cats
+      ["SELECT DISTINCT category FROM items"]
+      (vec (map :category cats)))))
+
 (defn insert
   [table records]
   (sql/with-connection connection
