@@ -5,9 +5,18 @@
                     "postgresql://localhost:5432/silent-auction"))
 
 (defn select-items
-  [func]
+  []
   (sql/with-connection connection
-    (sql/with-query-results* ["SELECT * FROM items"] func)))
+    (sql/with-query-results items
+      ["SELECT * FROM items"]
+      (vec items))))
+
+(defn select-item
+  [id]
+  (sql/with-connection connection
+    (sql/with-query-results items
+      ["SELECT * FROM items WHERE id = ?" (Integer/parseInt id)]
+      (first items))))
 
 (defn insert
   [table records]

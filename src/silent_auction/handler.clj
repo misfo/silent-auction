@@ -9,7 +9,8 @@
             [silent-auction.models.db :as db]))
 
 (defroutes admin-routes
-  (GET "/" [] (db/select-items admin-views/items)))
+  (GET "/" [] (admin-views/items (db/select-items)))
+  (GET "/item/:id" [id] (admin-views/edit-item (db/select-item id))))
 
 (defroutes app-routes
   (GET "/" [] (response/redirect urls/admin-root))
