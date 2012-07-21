@@ -1,0 +1,26 @@
+- Live Auction
+- Art & Decor
+- Children
+- Dining
+- Entertainment
+- Fashion
+- Getaways
+- Lifestyle
+- One of a kind
+- Sports
+- Wine & Spirits
+
+don't show categories that no items are in
+
+
+
+fields
+======
+- Image
+- Category
+- Item number?
+- Title
+- Description
+- Donor
+- Estimated Market Value
+- Fineprint

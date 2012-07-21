@@ -5,15 +5,14 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [silent-auction.urls :as urls]
-            [silent-auction.views.admin :as admin-views]
+            [silent-auction.views.core :as views]
             [silent-auction.models.db :as db]))
 
 (defroutes admin-routes
-  (GET "/" [] (admin-views/items (db/select-items)))
-  (GET "/item/:id" [id] (admin-views/edit-item (db/select-item id))))
+  (GET "/item/:id" [id] (views/edit-item (db/select-item id))))
 
 (defroutes app-routes
-  (GET "/" [] (response/redirect urls/admin-root))
+  (GET "/" [] (views/items []))
   (context urls/admin-root [] admin-routes)
   (route/resources "/")
   (route/not-found "Not Found"))
