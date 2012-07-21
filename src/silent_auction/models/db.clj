@@ -8,7 +8,9 @@
   []
   (sql/with-connection connection
     (sql/with-query-results items
-      ["SELECT * FROM items"]
+      [(str "SELECT items.*, categories.name AS category_name "
+            "FROM items "
+            "LEFT JOIN categories ON items.category_id = categories.id")]
       (vec items))))
 
 (defn select-item
@@ -21,8 +23,8 @@
 (def categories
   (sql/with-connection connection
     (sql/with-query-results cats
-      ["SELECT DISTINCT category FROM items"]
-      (vec (map :category cats)))))
+      ["SELECT * FROM categories ORDER BY priority DESC, name"]
+      (vec cats))))
 
 (defn insert
   [table records]

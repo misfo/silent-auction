@@ -12,7 +12,7 @@
   (GET "/item/:id" [id] (views/edit-item (db/select-item id))))
 
 (defroutes app-routes
-  (GET "/" [] (views/items []))
+  (GET "/" [] (views/items (db/select-items)))
   (context urls/admin-root [] admin-routes)
   (route/resources "/")
   (route/not-found "Not Found"))

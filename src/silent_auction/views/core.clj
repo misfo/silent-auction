@@ -19,7 +19,7 @@
           [:a.brand {:href "/"} "CHA Silent Auction"]
           [:div.nav-collapse
             [:ul.nav
-              (for [category db/categories]
+              (for [{category :name} db/categories]
                 [:li [:a {:href "#"} category]])]]]]]))
 
 (defn layout [& content]
@@ -39,26 +39,22 @@
      [:img {:src "http://placehold.it/360x286"}]
      [:div.caption "Photo by Patches O'Houlihan"]]]
    [:div.span8
-    [:h2 "Title for item"]
+    [:h2 (:title it)]
     [:p "Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui."]
     [:p "Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui."]
     [:p "Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui."]
     [:p "Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui."]
     [:p "Donated by " [:strong "President Obama"]]
     [:p "Estimated market value: " [:strong "$2,000"]]
-    [:p [:small "Please don't read this fineprint. Nothing to see here."]]
-   ]
-      ])
+    [:p [:small "Please don't read this fineprint. Nothing to see here."]]]])
 
-(defn item-category [[name itms]]
+(defn item-category [itms]
   [:section
-   [:div.page-header [:h1 name]]
-   (map item [:fake :fake])
-   ]
-  )
+   [:div.page-header [:h1 (:category_name (first itms))]]
+   (map item itms)])
 
 (defn items [itms]
-  (let [itms-by-category (reduce (fn [m c] (assoc m c [])) (sorted-map) db/categories)]
+  (let [itms-by-category (partition-by :category_name itms)]
     (layout (map item-category itms-by-category))))
 
 (defn- control-group
