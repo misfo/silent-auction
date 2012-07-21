@@ -16,11 +16,18 @@ don't show categories that no items are in
 
 fields
 ======
+- Item number?
 - Image
 - Category
-- Item number?
 - Title
 - Description
 - Donor
 - Estimated Market Value
 - Fineprint
+
+
+user login
+==========
+- me
+- Mum
+- one other person
