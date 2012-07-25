@@ -21,10 +21,11 @@
       (first items))))
 
 (def categories
-  (sql/with-connection connection
-    (sql/with-query-results cats
-      ["SELECT * FROM categories ORDER BY priority DESC, name"]
-      (vec cats))))
+  (memoize (fn []
+    (sql/with-connection connection
+      (sql/with-query-results cats
+        ["SELECT * FROM categories ORDER BY priority DESC, name"]
+        (vec cats))))))
 
 (defn insert
   [table records]

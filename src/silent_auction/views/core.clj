@@ -19,7 +19,7 @@
           [:a.brand {:href "/"} "CHA Silent Auction"]
           [:div.nav-collapse
             [:ul.nav
-              (for [{category :name} db/categories]
+              (for [{category :name} (db/categories)]
                 [:li [:a {:href "#"} category]])]]]]]))
 
 (defn layout [& content]
