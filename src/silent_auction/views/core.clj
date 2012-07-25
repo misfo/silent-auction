@@ -27,6 +27,7 @@
     [:head
       [:title "CHA Silent Auction"]
       (include-bootstrap)
+      (include-js "/js/bootstrap-modal.js")
       (include-css "/css/silent-auction.css")]
     [:body
       (navbar)
