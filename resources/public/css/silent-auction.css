@@ -10,3 +10,8 @@ body {
 .item .thumbnail .caption {
 	font-size: 11px;
 }
+
+#modal {
+	width: 750px;
+	margin-left: -375px;
+}
