@@ -28,6 +28,11 @@
         ["SELECT * FROM categories ORDER BY priority DESC, name"]
         (vec cats))))))
 
+(defn delete-item
+  [table where-params]
+  (sql/with-connection connection
+    (sql/delete-rows table where-params)))
+
 (defn insert
   [table records]
   (sql/with-connection connection

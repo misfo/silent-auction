@@ -15,7 +15,10 @@
     (db/insert-item params)
     (response/redirect "/"))
   (POST "/item/:id" [id]
-    (println id)))
+    (println id))
+  (POST "/item/:id/delete" [id]
+    (db/delete-rows :items ["id = ?" (Integer/parseInt id)])
+    ""))
 
 (defroutes app-routes
   (GET "/" [] (views/items (db/select-items)))
