@@ -35,21 +35,24 @@
     (navbar)
     [:div.container content]]))
 
-(defn item [{:keys [title]}]
+(defn- paragraphs [text]
+  (for [p (str/split text #"(\n\s*){2,}")]
+    [:p p]))
+
+(defn item [{:keys [id title description donor estimated_market_value fineprint]}]
   [:div.row.item
    [:div.span4
     [:div.thumbnail
      [:img {:src "http://placehold.it/360x286"}]
      [:div.caption "Photo by Patches O'Houlihan"]]]
    [:div.span8
-    [:h2 title]
-    [:p "Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui."]
-    [:p "Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui."]
-    [:p "Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui."]
-    [:p "Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui."]
-    [:p "Donated by " [:strong "President Obama"]]
-    [:p "Estimated market value: " [:strong "$2,000"]]
-    [:p [:small "Please don't read this fineprint. Nothing to see here."]]]])
+    [:h2 title
+         "&nbsp;"
+         [:a.btn.btn-danger.delete-item {:href (urls/delete-item id)} "Delete"]]
+    (paragraphs description)
+    [:p "Donated by " [:strong donor]]
+    [:p "Estimated market value: " [:strong (str "$" estimated_market_value)]]
+    [:p [:small fineprint]]]])
 
 (defn item-category [itms]
   [:section
