@@ -9,29 +9,29 @@
 
 (defn navbar []
   (html
-    [:div.navbar.navbar-fixed-top
-      [:div.navbar-inner
-        [:div.container
-          [:a.btn.btn-navbar {:data-toggle "collapse", :data-target ".nav-collapse"}
-            [:span.icon-bar]
-            [:span.icon-bar]
-            [:span.icon-bar]]
-          [:a.brand {:href "/"} "CHA Silent Auction"]
-          [:div.nav-collapse
-            [:ul.nav
-              (for [{category :name} (db/categories)]
-                [:li [:a {:href "#"} category]])]]]]]))
+   [:div.navbar.navbar-fixed-top
+    [:div.navbar-inner
+     [:div.container
+      [:a.btn.btn-navbar {:data-toggle "collapse", :data-target ".nav-collapse"}
+        [:span.icon-bar]
+        [:span.icon-bar]
+        [:span.icon-bar]]
+      [:a.brand {:href "/"} "CHA Silent Auction"]
+      [:div.nav-collapse
+       [:ul.nav
+        (for [{category :name} (db/categories)]
+          [:li [:a {:href "#"} category]])]]]]]))
 
 (defn layout [& content]
   (html5
-    [:head
-      [:title "CHA Silent Auction"]
-      (include-bootstrap)
-      (include-js "/js/bootstrap-modal.js")
-      (include-css "/css/silent-auction.css")]
-    [:body
-      (navbar)
-      [:div.container content]]))
+   [:head
+    [:title "CHA Silent Auction"]
+    (include-bootstrap)
+    (include-js "/js/bootstrap-modal.js")
+    (include-css "/css/silent-auction.css")]
+   [:body
+    (navbar)
+    [:div.container content]]))
 
 (defn item [it]
   [:div.row.item
@@ -61,22 +61,22 @@
 (defn- control-group
   [label & controls]
   [:div.control-group
-    [:label.control-label label]
-    (into [:div.controls] controls)])
+   [:label.control-label label]
+   (into [:div.controls] controls)])
 
 (defn edit-item [it]
   (layout
-    [:h2 "Edit Item"]
-    [:form.form-horizontal
-      [:fieldset
-        (control-group "Item"
-          [:input.input-xlarge {:type "text" :value (:item it)}])
-        (control-group "Item Complete?"
-          [:input.input-xlarge {:type "text" :value (:complete it)}])
-        (control-group "Category"
-          [:select (map #(vector :option %) db/categories)])
-        (control-group "Solicited by"
-          [:input.input-xlarge {:type "text" :value (:solicited-by it)}])
-        (control-group "Fair Market Value"
-          [:input.input-xlarge {:type "text" :value (:fair-market-value it)}])
-        ]]))
+   [:h2 "Edit Item"]
+   [:form.form-horizontal
+    [:fieldset
+      (control-group "Item"
+        [:input.input-xlarge {:type "text" :value (:item it)}])
+      (control-group "Item Complete?"
+        [:input.input-xlarge {:type "text" :value (:complete it)}])
+      (control-group "Category"
+        [:select (map #(vector :option %) db/categories)])
+      (control-group "Solicited by"
+        [:input.input-xlarge {:type "text" :value (:solicited-by it)}])
+      (control-group "Fair Market Value"
+        [:input.input-xlarge {:type "text" :value (:fair-market-value it)}])
+      ]]))
