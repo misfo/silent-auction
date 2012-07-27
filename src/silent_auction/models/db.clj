@@ -1,7 +1,7 @@
 (ns silent-auction.models.db
   (:require [clojure.java.jdbc :as sql]))
 
-(def connection (or (System/getenv "DATABASE_URL")
+(def connection (or (System/getenv "HEROKU_POSTGRESQL_YELLOW_URL")
                     "postgresql://localhost:5432/silent-auction"))
 
 (defn select-items
