@@ -9,7 +9,13 @@
             [silent-auction.models.db :as db]))
 
 (defroutes admin-routes
-  (GET "/item/:id" [id] (views/edit-item (db/select-item id))))
+  (GET "/item/:id" [id]
+    (views/edit-item-modal (db/select-item id)))
+  (POST "/item/" {params :params}
+    (db/insert-item params)
+    (response/redirect "/"))
+  (POST "/item/:id" [id]
+    (println id)))
 
 (defroutes app-routes
   (GET "/" [] (views/items (db/select-items)))

@@ -59,13 +59,20 @@
 (defn- category-option [{:keys [id name]}]
   [:option {:value id} name])
 
+(defn- control-group
+  [label & controls]
+  [:div.control-group
+   [:label.control-label label]
+   (into [:div.controls] controls)])
+
 (defn edit-item-modal [it]
   (let [new-item (empty? it)]
-    [[:div.modal-header
+    (list
+     [:div.modal-header
       [:button.close {:type "button", :data-dismiss "modal"} "×"]
       [:h3 (if new-item "Create Item" "Edit Item")]]
      [:div.modal-body
-      [:form.form-horizontal
+      [:form.form-horizontal {:method "POST" :action (urls/edit-item (:id it))}
        [:fieldset
         (control-group "Title"
           [:input.input-xlarge {:type "text"
@@ -76,7 +83,7 @@
                                 :name "item_id"
                                 :value (:item_id it)}])
         (control-group "Category"
-          [:select (map category-option (db/categories))])
+          [:select {:name "category_id"} (map category-option (db/categories))])
         (control-group "Description"
           [:textarea.input-xxlarge {:name "description"
                                     :rows 4
@@ -95,7 +102,7 @@
                                     :value (:fineprint it)}])]]]
      [:div.modal-footer
       [:a.btn {:data-dismiss "modal"} "Close"]
-      [:a.btn.btn-primary (if new-item "Create Item" "Save Changes")]]]))
+      [:a.btn.btn-primary.save (if new-item "Create Item" "Save Changes")]])))
 
 (defn create-item-modal []
   (edit-item-modal {}))
@@ -104,12 +111,6 @@
   (let [itms-by-category (partition-by :category_name itms)]
     (layout
      [:button#create-item.btn.btn-primary "Create New Item"]
-     (into [:div#modal.modal.hide] (create-item-modal))
+     [:div#modal.modal.hide (create-item-modal)]
      (map item-category itms-by-category))))
-
-(defn- control-group
-  [label & controls]
-  [:div.control-group
-   [:label.control-label label]
-   (into [:div.controls] controls)])
 
