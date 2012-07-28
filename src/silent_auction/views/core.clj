@@ -51,7 +51,8 @@
          [:a.btn.btn-danger.delete-item {:href (urls/delete-item id)} "Delete"]]
     (paragraphs description)
     [:p "Donated by " [:strong donor]]
-    [:p "Estimated market value: " [:strong (str "$" estimated_market_value)]]
+    (when estimated_market_value
+      [:p "Estimated market value: " [:strong (str "$" estimated_market_value)]])
     [:p [:small fineprint]]]])
 
 (defn item-category [itms]
