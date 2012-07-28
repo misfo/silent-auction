@@ -7,20 +7,21 @@
             [silent-auction.models.db :as db]
             [silent-auction.urls :as urls]))
 
+(defn- category-id [cat-name]
+  (-> cat-name
+    (str/replace #"\W+" "-")
+    str/lower-case))
+
 (defn navbar []
   (html
    [:div.navbar.navbar-fixed-top
     [:div.navbar-inner
      [:div.container
-      [:a.btn.btn-navbar {:data-toggle "collapse", :data-target ".nav-collapse"}
-        [:span.icon-bar]
-        [:span.icon-bar]
-        [:span.icon-bar]]
       [:a.brand {:href "/"} "CHA Silent Auction"]
       [:div.nav-collapse
        [:ul.nav
-        (for [{category :name} (db/categories)]
-          [:li [:a {:href "#"} category]])]]]]]))
+        (for [{cat :name} (db/used-categories)]
+          [:li [:a {:href (str "#" (category-id cat))} cat]])]]]]]))
 
 (defn layout [& content]
   (html5
@@ -56,9 +57,10 @@
     [:p [:small fineprint]]]])
 
 (defn item-category [itms]
-  [:section
-   [:div.page-header [:h1 (:category_name (first itms))]]
-   (map item itms)])
+  (let [cat (:category_name (first itms))]
+    [:section {:id (category-id cat)}
+      [:div.page-header [:h1 cat]]
+      (map item itms)]))
 
 (defn- category-option [{:keys [id name]}]
   [:option {:value id} name])

@@ -1,4 +1,13 @@
 $(function() {
+  var $win = $(window),
+    $nav = $('.navbar');
+
+  $nav.click(function () {
+    setTimeout(function () {
+      $win.scrollTop($win.scrollTop() - 47);
+    }, 0);
+  });
+
   $('#create-item').click(function() {
     $('#modal').modal({});
   });

@@ -28,6 +28,13 @@
         ["SELECT * FROM categories ORDER BY priority DESC, name"]
         (vec cats))))))
 
+(defn used-categories
+  []
+  (sql/with-connection connection
+    (sql/with-query-results cats
+      ["SELECT * FROM categories WHERE id IN (SELECT category_id FROM items) ORDER BY priority DESC, name"]
+      (vec cats))))
+
 (defn delete-rows
   [table where-params]
   (sql/with-connection connection
