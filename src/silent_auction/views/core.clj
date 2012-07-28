@@ -71,52 +71,60 @@
    [:label.control-label label]
    (into [:div.controls] controls)])
 
+(defn modal [title body buttons]
+  (list
+   [:div.modal-header
+    [:button.close {:type "button", :data-dismiss "modal"} "×"]
+    [:h3 title]]
+   [:div.modal-body body]
+   [:div.modal-footer
+    [:a.btn {:data-dismiss "modal"} "Close"]
+    buttons]))
+
+(defn item-form [it]
+  [:form.form-horizontal {:method "POST" :action (urls/edit-item (:id it))}
+    [:fieldset
+     (control-group "Title"
+       [:input.input-xlarge {:type "text"
+                             :name :title
+                             :value (:title it)}])
+     (control-group "Item ID"
+       [:input.input-xlarge {:type "text"
+                             :name "item_id"
+                             :value (:item_id it)}])
+     (control-group "Category"
+       [:select {:name "category_id"} (map category-option (db/categories))])
+     (control-group "Description"
+       [:textarea.input-xxlarge {:name "description"
+                                 :rows 4
+                                 :value (:description it)}])
+     (control-group "Donor"
+       [:input.input-xlarge {:type "text"
+                             :name "donor"
+                             :value (:donor it)}])
+     (control-group "Estimated Market Value"
+       [:input.input-xlarge {:type "text"
+                             :name "estimated_market_value"
+                             :value (:estimated_market_value it)}])
+     (control-group "Fineprint"
+       [:textarea.input-xxlarge {:name "fineprint"
+                                 :rows 2
+                                 :value (:fineprint it)}])]])
+
 (defn edit-item-modal [it]
-  (let [new-item (empty? it)]
-    (list
-     [:div.modal-header
-      [:button.close {:type "button", :data-dismiss "modal"} "×"]
-      [:h3 (if new-item "Create Item" "Edit Item")]]
-     [:div.modal-body
-      [:form.form-horizontal {:method "POST" :action (urls/edit-item (:id it))}
-       [:fieldset
-        (control-group "Title"
-          [:input.input-xlarge {:type "text"
-                                :name :title
-                                :value (:title it)}])
-        (control-group "Item ID"
-          [:input.input-xlarge {:type "text"
-                                :name "item_id"
-                                :value (:item_id it)}])
-        (control-group "Category"
-          [:select {:name "category_id"} (map category-option (db/categories))])
-        (control-group "Description"
-          [:textarea.input-xxlarge {:name "description"
-                                    :rows 4
-                                    :value (:description it)}])
-        (control-group "Donor"
-          [:input.input-xlarge {:type "text"
-                                :name "donor"
-                                :value (:donor it)}])
-        (control-group "Estimated Market Value"
-          [:input.input-xlarge {:type "text"
-                                :name "estimated_market_value"
-                                :value (:estimated_market_value it)}])
-        (control-group "Fineprint"
-          [:textarea.input-xxlarge {:name "fineprint"
-                                    :rows 2
-                                    :value (:fineprint it)}])]]]
-     [:div.modal-footer
-      [:a.btn {:data-dismiss "modal"} "Close"]
-      [:a.btn.btn-primary.save (if new-item "Create Item" "Save Changes")]])))
+  (modal "Edit Item"
+         (item-form it)
+         [:a.btn.btn-primary.save "Save Changes"]))
 
 (defn create-item-modal []
-  (edit-item-modal {}))
+  (modal "Create Item"
+         (item-form {})
+         [:a.btn.btn-primary.save "Create Item"]))
 
 (defn items [itms]
   (let [itms-by-category (partition-by :category_name itms)]
     (layout
      [:button#create-item.btn.btn-primary "Create New Item"]
-     [:div#modal.modal.hide (create-item-modal)]
+     [:div#item-modal.modal.hide (create-item-modal)]
      (map item-category itms-by-category))))
 

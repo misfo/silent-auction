@@ -6,10 +6,10 @@ $(function() {
     setTimeout(function () {
       $win.scrollTop($win.scrollTop() - 47);
     }, 0);
-  });
+  })
 
   $('#create-item').click(function() {
-    $('#modal').modal({});
+    $('#item-modal').modal({});
   });
 
   $('.modal .save').click(function() {
