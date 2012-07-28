@@ -6,13 +6,14 @@
             [compojure.route :as route]
             [silent-auction.urls :as urls]
             [silent-auction.views.core :as views]
-            [silent-auction.models.db :as db]))
+            [silent-auction.models.db :as db]
+            [silent-auction.models.items :as items]))
 
 (defroutes admin-routes
   (GET "/item/:id" [id]
     (views/edit-item-modal (db/select-item id)))
   (POST "/item/" {params :params}
-    (db/insert-item params)
+    (db/insert :items [(items/parse params)])
     (response/redirect "/"))
   (POST "/item/:id" [id]
     (println id))
