@@ -49,6 +49,8 @@
    [:div.span8
     [:h2 title
          "&nbsp;"
+         [:a.btn.btn-primary.upload {:href "#"} "Upload"]
+         "&nbsp;"
          [:a.btn.btn-danger.delete-item {:href (urls/delete-item id)} "Delete"]]
     (paragraphs description)
     [:p "Donated by " [:strong donor]]
@@ -121,10 +123,24 @@
          (item-form {})
          [:a.btn.btn-primary.save "Create Item"]))
 
+(defn upload-modal []
+  (modal "Upload Image"
+         [:form.form-horizontal {:method "POST" :action (urls/upload-image)}
+           [:input {:type "hidden", :name "item_id"}]
+           [:fieldset
+            (control-group "Image"
+              [:input.input-xlarge {:type "file"
+                                    :name "image-data"}])
+            (control-group "Photo by"
+              [:input.input-xlarge {:type "text"
+                                    :name "photo_by"}])]]
+         [:a.btn.btn-primary.save "Upload Image"]))
+
 (defn items [itms]
   (let [itms-by-category (partition-by :category_name itms)]
     (layout
      [:button#create-item.btn.btn-primary "Create New Item"]
      [:div#item-modal.modal.hide (create-item-modal)]
+     [:div#upload-modal.modal.hide (upload-modal)]
      (map item-category itms-by-category))))
 
