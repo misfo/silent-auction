@@ -6,14 +6,26 @@ $(function() {
     setTimeout(function () {
       $win.scrollTop($win.scrollTop() - 47);
     }, 0);
-  })
+  });
 
   $('#create-item').click(function() {
     $('#item-modal').modal({});
   });
 
   $('.modal .save').click(function() {
-    $(this).parents('.modal').find('form')[0].submit();
+    var $form = $(this).parents('.modal').find('form');
+    $.ajax({
+      type: 'POST',
+      url: $form.attr('action'),
+      data: $form.serialize(),
+      success: function() {
+        window.location = "/";
+      },
+      error: function(jqXHR) {
+        var data = $.parseJSON(jqXHR.responseText);
+        console.log(data);
+      }
+    });
   });
 
   $('.delete-item').click(function() {
