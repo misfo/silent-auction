@@ -6,4 +6,10 @@
   (is (= (items/parse {:category_id "1"
                        :estimated_market_value "123.4"})
          {:category_id 1
+          :estimated_market_value 123.4M}))
+  (is (= (items/parse {:category_id "1"
+                       :estimated_market_value "123.4"
+                       :id "123"
+                       :some_whacky_param "sdlfkj"})
+         {:category_id 1
           :estimated_market_value 123.4M})))

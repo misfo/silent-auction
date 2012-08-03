@@ -2,6 +2,14 @@
   (:require [valip.core :as valip])
   (:use [valip.predicates :only [present?]]))
 
+(def user-input-attrs [:category_id
+                       :item_id
+                       :title
+                       :description
+                       :donor
+                       :estimated_market_value
+                       :fineprint])
+
 (defn- parse-usd
   [text]
   (when (seq text)
@@ -28,5 +36,6 @@
   [it]
   (letfn [(parse-int [text] (when (seq text) (Integer/parseInt text)))]
     (-> it
+      (select-keys user-input-attrs)
       (update-in [:estimated_market_value] parse-usd)
       (update-in [:category_id] parse-int))))

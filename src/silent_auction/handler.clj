@@ -11,6 +11,8 @@
             [silent-auction.models.items :as items]))
 
 (defroutes admin-routes
+  (GET "/item/new" []
+    (views/create-item-modal))
   (GET "/item/:id" [id]
     (views/edit-item-modal (db/select-item id)))
   (POST "/item/" {params :params}
@@ -20,8 +22,15 @@
       (do
         (db/insert :items [(items/parse params)])
         (response/response {}))))
-  (POST "/item/:id" [id]
-    (println id))
+  (POST "/item/:id" {params :params}
+    (if-let [errors (items/validate params)]
+      (-> (response/response errors)
+        (assoc :status 400))
+      (do
+        (db/update-values :items
+                          ["id = ?" (Integer/parseInt (:id params))]
+                          (items/parse params))
+        (response/response {}))))
   (POST "/item/:id/delete" [id]
     (db/delete-rows :items ["id = ?" (Integer/parseInt id)])
     ""))

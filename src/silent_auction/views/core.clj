@@ -49,6 +49,8 @@
    [:div.span8
     [:h2 title
          "&nbsp;"
+         [:a.btn.btn-primary.edit-item {:href (urls/edit-item id)} "Edit"]
+         "&nbsp;"
          [:a.btn.btn-danger.delete-item {:href (urls/delete-item id)} "Delete"]]
     (paragraphs description)
     [:p "Donated by " [:strong donor]]
@@ -116,19 +118,21 @@
                                  :value (:fineprint it)}])]])
 
 (defn edit-item-modal [it]
-  (modal "Edit Item"
-         (item-form it)
-         [:a.btn.btn-primary.save "Save Changes"]))
+  (html
+   (modal "Edit Item"
+          (item-form it)
+          [:a.btn.btn-primary.save "Save Changes"])))
 
 (defn create-item-modal []
-  (modal "Create Item"
-         (item-form {})
-         [:a.btn.btn-primary.save "Create Item"]))
+  (html
+   (modal "Create Item"
+          (item-form {})
+          [:a.btn.btn-primary.save "Create Item"])))
 
 (defn items [itms]
   (let [itms-by-category (partition-by :category_name itms)]
     (layout
-     [:button#create-item.btn.btn-primary "Create New Item"]
-     [:div#item-modal.modal.hide (create-item-modal)]
+     [:a#create-item.btn.btn-primary {:href (urls/new-item)} "Create New Item"]
+     [:div#item-modal.modal.hide]
      (map item-category itms-by-category))))
 

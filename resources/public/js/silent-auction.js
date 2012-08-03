@@ -8,11 +8,7 @@ $(function() {
     }, 0);
   });
 
-  $('#create-item').click(function() {
-    $('#item-modal').modal({});
-  });
-
-  $('.modal .save').click(function() {
+  function modalSave() {
     var $form = $(this).parents('.modal').find('form');
 
     $.ajax({
@@ -36,6 +32,17 @@ $(function() {
         }
       }
     });
+  }
+
+  $('#create-item, .edit-item').click(function() {
+    var $this = $(this);
+    $.get($this.attr('href'), {}, function(html) {
+      $('#item-modal')
+        .html(html)
+        .modal({})
+        .find('.save').click(modalSave);
+    });
+    return false;
   });
 
   $('.delete-item').click(function() {
