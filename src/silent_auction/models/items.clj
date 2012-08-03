@@ -7,8 +7,8 @@
   (when (seq text)
     (let [usd (BigDecimal. text)]
       (if (> (.scale usd) 2)
-        (throw (NumberFormatException.)
-        usd)))))
+        (throw (NumberFormatException.))
+        usd))))
 
 (defn- valid-usd?
   [text]
