@@ -1,5 +1,6 @@
 (ns silent-auction.models.items
-  (:require [valip.core :as valip]))
+  (:require [valip.core :as valip])
+  (:use [valip.predicates :only [present?]]))
 
 (defn- parse-usd
   [text]
@@ -19,6 +20,8 @@
 (defn validate
   [it]
   (valip/validate it
+    [:title present? "Must be supplied"]
+    [:donor present? "Must be supplied"]
     [:estimated_market_value valid-usd? "Must be a valid US dollar amount"]))
 
 (defn parse
