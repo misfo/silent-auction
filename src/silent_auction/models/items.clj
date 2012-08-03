@@ -13,8 +13,10 @@
 (defn- parse-usd
   [text]
   (when (seq text)
-    (let [usd (BigDecimal. text)]
-      (if (> (.scale usd) 2)
+    (let [usd (BigDecimal. text)
+          scale (.scale usd)
+          integer-digits (- (.precision usd) scale)]
+      (if (or (> scale 2) (> integer-digits 8))
         (throw (NumberFormatException.))
         usd))))
 
