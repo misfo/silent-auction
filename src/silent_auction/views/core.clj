@@ -105,9 +105,11 @@
                              :name "donor"
                              :value (:donor it)}])
      (control-group "Estimated Market Value"
-       [:input.input-xlarge {:type "text"
-                             :name "estimated_market_value"
-                             :value (:estimated_market_value it)}])
+       [:div.input-prepend
+        [:span.add-on "$"]
+        [:input.input-xlarge {:type "text"
+                              :name "estimated_market_value"
+                              :value (:estimated_market_value it)}]])
      (control-group "Fineprint"
        [:textarea.input-xxlarge {:name "fineprint"
                                  :rows 2
