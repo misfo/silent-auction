@@ -64,8 +64,8 @@
       [:div.page-header [:h1 cat]]
       (map item itms)]))
 
-(defn- category-option [{:keys [id name]}]
-  [:option {:value id} name])
+(defn- category-option [selected-id {:keys [id name]}]
+  [:option {:value id :selected (= id selected-id)} name])
 
 (defn- control-group
   [label & controls]
@@ -97,11 +97,12 @@
                              :name "item_id"
                              :value (:item_id it)}])
      (control-group "Category"
-       [:select {:name "category_id"} (map category-option (db/categories))])
+       [:select {:name "category_id"} (map (partial category-option (:category_id it))
+                                           (db/categories))])
      (control-group "Description"
        [:textarea.input-xxlarge {:name "description"
-                                 :rows 4
-                                 :value (:description it)}])
+                                 :rows 4}
+                                (:description it)])
      (control-group "Donor"
        [:input.input-xlarge {:type "text"
                              :name "donor"
@@ -114,8 +115,8 @@
                               :value (:estimated_market_value it)}]])
      (control-group "Fineprint"
        [:textarea.input-xxlarge {:name "fineprint"
-                                 :rows 2
-                                 :value (:fineprint it)}])]])
+                                 :rows 2}
+                                (:fineprint it)])]])
 
 (defn edit-item-modal [it]
   (html
