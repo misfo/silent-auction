@@ -19,16 +19,20 @@ $(function() {
         window.location = "/";
       },
       error: function(jqXHR) {
-        var data = $.parseJSON(jqXHR.responseText);
-          $controlGroups = $form.find('.control-group');
-        $controlGroups.removeClass('error');
-        $controlGroups.find('.help-inline').text('');
+        if (jqXHR.status == 400) {
+          var data = $.parseJSON(jqXHR.responseText);
+            $controlGroups = $form.find('.control-group');
+          $controlGroups.removeClass('error');
+          $controlGroups.find('.help-inline').text('');
 
-        for (var attr in data) {
-          var help = data[attr].join(', '),
-            $controlGroup = $form.find('input[name=' + attr + ']').parents('.control-group');
-          $controlGroup.addClass('error');
-          $controlGroup.find('.help-inline').text(help);
+          for (var attr in data) {
+            var help = data[attr].join(', '),
+              $controlGroup = $form.find('input[name=' + attr + ']').parents('.control-group');
+            $controlGroup.addClass('error');
+            $controlGroup.find('.help-inline').text(help);
+          }
+        } else {
+          alert("An unknown error occurred...");
         }
       }
     });
