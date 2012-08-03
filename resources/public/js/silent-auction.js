@@ -14,6 +14,7 @@ $(function() {
 
   $('.modal .save').click(function() {
     var $form = $(this).parents('.modal').find('form');
+
     $.ajax({
       type: 'POST',
       url: $form.attr('action'),
@@ -23,7 +24,16 @@ $(function() {
       },
       error: function(jqXHR) {
         var data = $.parseJSON(jqXHR.responseText);
-        console.log(data);
+          $controlGroups = $form.find('.control-group');
+        $controlGroups.removeClass('error');
+        $controlGroups.find('.help-inline').text('');
+
+        for (var attr in data) {
+          var help = data[attr].join(', '),
+            $controlGroup = $form.find('input[name=' + attr + ']').parents('.control-group');
+          $controlGroup.addClass('error');
+          $controlGroup.find('.help-inline').text(help);
+        }
       }
     });
   });

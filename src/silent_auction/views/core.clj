@@ -69,7 +69,9 @@
   [label & controls]
   [:div.control-group
    [:label.control-label label]
-   (into [:div.controls] controls)])
+   (-> [:div.controls]
+     (into controls)
+     (conj [:span.help-inline]))])
 
 (defn modal [title body buttons]
   (list
