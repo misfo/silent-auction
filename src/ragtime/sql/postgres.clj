@@ -1,4 +1,4 @@
-(ns ragtime.sql.database
+(ns ragtime.sql.postgres
   (:use [ragtime.core :only (Migratable)])
   (:require [clojure.java.jdbc :as sql]
             [clojure.java.io :as io])
@@ -12,7 +12,7 @@
     (try
       (sql/create-table migrations-table
                         [:id "varchar(255)"]
-                        [:created_at "datetime"])
+                        [:created_at :timestamp "NOT NULL" "DEFAULT CURRENT_TIMESTAMP"])
       (catch Exception _))))
 
 (defrecord SqlDatabase [classname subprotocol subname user password])
@@ -22,7 +22,7 @@
                        (sql/with-connection db
                          (ensure-migrations-table-exists db)
                          (sql/insert-values migrations-table
-                                            [:id :created_at] [(str id) (Date.)])))
+                                            [:id] [(str id)])))
   :remove-migration-id (fn [db id]
                          (sql/with-connection db
                            (ensure-migrations-table-exists db)

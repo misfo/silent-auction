@@ -1,6 +1,7 @@
 (ns silent-auction.migrations
   (:require [clojure.java.jdbc :as sql]
             [ragtime.core :as ragtime]
+            ragtime.sql.postgres
             [silent-auction.models.db :as db]))
 
 (def initial-ddls
