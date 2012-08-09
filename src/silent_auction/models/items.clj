@@ -1,5 +1,6 @@
 (ns silent-auction.models.items
-  (:require [valip.core :as valip])
+  (:require [clojure.string :as str]
+            [valip.core :as valip])
   (:use [valip.predicates :only [present?]]))
 
 (def user-input-attrs [:category_id
@@ -8,7 +9,10 @@
                        :description
                        :donor
                        :estimated_market_value
+                       :price
                        :fineprint])
+
+(def price-types #{"priceless"})
 
 (defn- parse-usd
   [text]
@@ -32,7 +36,11 @@
   (valip/validate it
     [:title present? "Must be supplied"]
     [:donor present? "Must be supplied"]
-    [:estimated_market_value valid-usd? "Must be a valid US dollar amount"]))
+    [:price price-types "Unknown value"]
+    [:estimated_market_value valid-usd? "Must be a valid US dollar amount"]
+    [:estimated_market_value
+     #(or (str/blank? (:price it)) (str/blank? %))
+     "Cannot be specified for priceless items"]))
 
 (defn parse
   [it]

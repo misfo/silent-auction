@@ -40,7 +40,7 @@
   (for [p (str/split text #"(\n\s*){2,}")]
     [:p p]))
 
-(defn item [{:keys [id title description donor estimated_market_value fineprint]}]
+(defn item [{:keys [id title description donor price estimated_market_value fineprint]}]
   [:div.row.item
    [:div.span4
     [:div.thumbnail
@@ -54,8 +54,10 @@
          [:a.btn.btn-danger.delete-item {:href (urls/delete-item id)} "Delete"]]
     (paragraphs description)
     [:p "Donated by " [:strong donor]]
-    (when estimated_market_value
-      [:p "Estimated market value: " [:strong (str "$" estimated_market_value)]])
+    (cond
+     (not (str/blank? price)) [:p [:strong (str/capitalize price)]]
+     estimated_market_value [:p "Estimated market value: "
+                             [:strong (str "$" estimated_market_value)]])
     [:p [:small fineprint]]]])
 
 (defn item-category [itms]
@@ -112,7 +114,14 @@
         [:span.add-on "$"]
         [:input.input-xlarge {:type "text"
                               :name "estimated_market_value"
-                              :value (:estimated_market_value it)}]])
+                              :value (:estimated_market_value it)}]]
+       "&nbsp;"
+       [:label.inline.checkbox
+        [:input {:type "checkbox"
+                 :name "price"
+                 :value "priceless"
+                 :checked (= (:price it) "priceless")}]
+        "Priceless"])
      (control-group "Fineprint"
        [:textarea.input-xxlarge {:name "fineprint"
                                  :rows 2}
