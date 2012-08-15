@@ -157,9 +157,8 @@
 (defn items [itms]
   (let [itms-by-category (partition-by :category_name itms)]
     (layout
-     [:button#create-item.btn.btn-primary "Create New Item"]
-     [:div#item-modal.modal.hide (create-item-modal)]
      [:a#create-item.btn.btn-primary {:href (urls/new-item)} "Create New Item"]
+     [:div#item-modal.modal.hide (create-item-modal)]
      [:div#item-modal.modal.hide]
      [:div#upload-modal.modal.hide (upload-modal)]
      (map item-category itms-by-category))))
