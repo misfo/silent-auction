@@ -2,6 +2,8 @@
 
 (def admin-root "/admin")
 
-(defn edit-item    [id] (str admin-root "/item/" id))
-(defn delete-item  [id] (str (edit-item id) "/delete"))
+(defn new-item    []   (str admin-root "/item/new"))
+(defn edit-item   [id] (str admin-root "/item/" id))
 (defn upload-image []   (str admin-root "/upload"))
+(defn delete-item [id] (str (edit-item id) "/delete"))
+

@@ -40,7 +40,7 @@
   (for [p (str/split text #"(\n\s*){2,}")]
     [:p p]))
 
-(defn item [{:keys [id title description donor estimated_market_value fineprint]}]
+(defn item [{:keys [id title description donor price estimated_market_value fineprint]}]
   [:div.row.item
    [:div.span4
     [:div.thumbnail
@@ -49,13 +49,17 @@
    [:div.span8
     [:h2 title
          "&nbsp;"
+         [:a.btn.btn-primary.edit-item {:href (urls/edit-item id)} "Edit"]
+         "&nbsp;"
          [:a.btn.btn-primary.upload {:href "#"} "Upload"]
          "&nbsp;"
          [:a.btn.btn-danger.delete-item {:href (urls/delete-item id)} "Delete"]]
     (paragraphs description)
     [:p "Donated by " [:strong donor]]
-    (when estimated_market_value
-      [:p "Estimated market value: " [:strong (str "$" estimated_market_value)]])
+    (cond
+     (not (str/blank? price)) [:p [:strong (str/capitalize price)]]
+     estimated_market_value [:p "Estimated market value: "
+                             [:strong (str "$" estimated_market_value)]])
     [:p [:small fineprint]]]])
 
 (defn item-category [itms]
@@ -64,14 +68,16 @@
       [:div.page-header [:h1 cat]]
       (map item itms)]))
 
-(defn- category-option [{:keys [id name]}]
-  [:option {:value id} name])
+(defn- category-option [selected-id {:keys [id name]}]
+  [:option {:value id :selected (= id selected-id)} name])
 
 (defn- control-group
   [label & controls]
   [:div.control-group
    [:label.control-label label]
-   (into [:div.controls] controls)])
+   (-> [:div.controls]
+     (into controls)
+     (conj [:span.help-inline]))])
 
 (defn modal [title body buttons]
   (list
@@ -95,33 +101,45 @@
                              :name "item_id"
                              :value (:item_id it)}])
      (control-group "Category"
-       [:select {:name "category_id"} (map category-option (db/categories))])
+       [:select {:name "category_id"} (map (partial category-option (:category_id it))
+                                           (db/categories))])
      (control-group "Description"
        [:textarea.input-xxlarge {:name "description"
-                                 :rows 4
-                                 :value (:description it)}])
+                                 :rows 4}
+                                (:description it)])
      (control-group "Donor"
        [:input.input-xlarge {:type "text"
                              :name "donor"
                              :value (:donor it)}])
      (control-group "Estimated Market Value"
-       [:input.input-xlarge {:type "text"
-                             :name "estimated_market_value"
-                             :value (:estimated_market_value it)}])
+       [:div.input-prepend
+        [:span.add-on "$"]
+        [:input.input-xlarge {:type "text"
+                              :name "estimated_market_value"
+                              :value (:estimated_market_value it)}]]
+       "&nbsp;"
+       [:label.inline.checkbox
+        [:input {:type "checkbox"
+                 :name "price"
+                 :value "priceless"
+                 :checked (= (:price it) "priceless")}]
+        "Priceless"])
      (control-group "Fineprint"
        [:textarea.input-xxlarge {:name "fineprint"
-                                 :rows 2
-                                 :value (:fineprint it)}])]])
+                                 :rows 2}
+                                (:fineprint it)])]])
 
 (defn edit-item-modal [it]
-  (modal "Edit Item"
-         (item-form it)
-         [:a.btn.btn-primary.save "Save Changes"]))
+  (html
+   (modal "Edit Item"
+          (item-form it)
+          [:a.btn.btn-primary.save "Save Changes"])))
 
 (defn create-item-modal []
-  (modal "Create Item"
-         (item-form {})
-         [:a.btn.btn-primary.save "Create Item"]))
+  (html
+   (modal "Create Item"
+          (item-form {})
+          [:a.btn.btn-primary.save "Create Item"])))
 
 (defn upload-modal []
   (modal "Upload Image"
@@ -141,6 +159,8 @@
     (layout
      [:button#create-item.btn.btn-primary "Create New Item"]
      [:div#item-modal.modal.hide (create-item-modal)]
+     [:a#create-item.btn.btn-primary {:href (urls/new-item)} "Create New Item"]
+     [:div#item-modal.modal.hide]
      [:div#upload-modal.modal.hide (upload-modal)]
      (map item-category itms-by-category))))
 

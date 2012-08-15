@@ -45,3 +45,8 @@
   (sql/with-connection connection
     (apply sql/insert-records table records)))
 
+(defn update-values
+  [table where-params record]
+  (sql/with-connection connection
+    (sql/update-values table where-params record)))
+

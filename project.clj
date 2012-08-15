@@ -6,6 +6,9 @@
                  [org.clojure/java.jdbc "0.2.2"]
                  [postgresql/postgresql "9.1-901.jdbc4"]
                  [compojure "1.1.0"]
-                 [hiccup-bootstrap "0.1.0"]]
+                 [hiccup-bootstrap "0.1.0"]
+                 [ragtime/ragtime.core "0.2.0"]
+                 [ring/ring-json "0.1.0"]
+                 [valip "0.2.0"]]
   :plugins [[lein-ring "0.7.1"]]
   :ring {:handler silent-auction.handler/app})

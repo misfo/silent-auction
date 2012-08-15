@@ -8,13 +8,45 @@ $(function() {
     }, 0);
   })
 
-  $('#create-item').click(function() {
-    $('#item-modal').modal({});
-    return false;
-  });
+  function modalSave() {
+    var $form = $(this).parents('.modal').find('form');
 
-  $('.modal .save').click(function() {
-    $(this).parents('.modal').find('form')[0].submit();
+    $.ajax({
+      type: 'POST',
+      url: $form.attr('action'),
+      data: $form.serialize(),
+      success: function() {
+        window.location = "/";
+      },
+      error: function(jqXHR) {
+        if (jqXHR.status == 400) {
+          var data = $.parseJSON(jqXHR.responseText);
+            $controlGroups = $form.find('.control-group');
+          $controlGroups.removeClass('error');
+          $controlGroups.find('.help-inline').text('');
+
+          for (var attr in data) {
+            var help = data[attr].join(', '),
+              $controlGroup = $form.find('input[name=' + attr + ']').parents('.control-group');
+            $controlGroup.addClass('error');
+            $controlGroup.find('.help-inline').text(help);
+          }
+        } else {
+          alert("An unknown error occurred...");
+        }
+      }
+    });
+  }
+
+  $('#create-item, .edit-item').click(function() {
+    var $this = $(this);
+    $.get($this.attr('href'), {}, function(html) {
+      $('#item-modal')
+        .html(html)
+        .modal({})
+        .find('.save').click(modalSave);
+    });
+    return false;
   });
 
   $('.btn.upload').click(function() {
