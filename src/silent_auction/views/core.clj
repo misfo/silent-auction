@@ -51,7 +51,7 @@
          "&nbsp;"
          [:a.btn.btn-primary.edit-item {:href (urls/edit-item id)} "Edit"]
          "&nbsp;"
-         [:a.btn.btn-primary.upload {:href "#"} "Upload"]
+         [:a.btn.btn-primary.upload {:href (urls/upload-image id)} "Upload"]
          "&nbsp;"
          [:a.btn.btn-danger.delete-item {:href (urls/delete-item id)} "Delete"]]
     (paragraphs description)
@@ -141,18 +141,20 @@
           (item-form {})
           [:a.btn.btn-primary.save "Create Item"])))
 
-(defn upload-modal []
-  (modal "Upload Image"
-         [:form.form-horizontal {:method "POST" :action (urls/upload-image)}
-           [:input {:type "hidden", :name "item_id"}]
+(defn upload-modal [id]
+  (html
+   (modal "Upload Image"
+          [:form.form-horizontal {:method "POST"
+                                  :action (urls/upload-image id)
+                                  :enctype "multipart/form-data"}
            [:fieldset
             (control-group "Image"
-              [:input.input-xlarge {:type "file"
-                                    :name "image-data"}])
+                           [:input.input-xlarge {:type "file"
+                                                 :name "image-data"}])
             (control-group "Photo by"
-              [:input.input-xlarge {:type "text"
-                                    :name "photo_by"}])]]
-         [:a.btn.btn-primary.save "Upload Image"]))
+                           [:input.input-xlarge {:type "text"
+                                                 :name "photo_by"}])]]
+          [:a.btn.btn-primary.save "Upload Image"])))
 
 (defn items [itms]
   (let [itms-by-category (partition-by :category_name itms)]
@@ -160,6 +162,6 @@
      [:a#create-item.btn.btn-primary {:href (urls/new-item)} "Create New Item"]
      [:div#item-modal.modal.hide (create-item-modal)]
      [:div#item-modal.modal.hide]
-     [:div#upload-modal.modal.hide (upload-modal)]
+     [:div#upload-modal.modal.hide]
      (map item-category itms-by-category))))
 

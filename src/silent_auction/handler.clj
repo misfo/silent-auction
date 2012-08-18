@@ -8,13 +8,13 @@
             [silent-auction.urls :as urls]
             [silent-auction.views.core :as views]
             [silent-auction.models.db :as db]
-            [silent-auction.models.items :as items]))
+            [silent-auction.models.images :as images]
+            [silent-auction.models.items :as items]
+            [silent-auction.models.s3 :as s3]))
 
 (defroutes admin-routes
   (GET "/item/new" []
     (views/create-item-modal))
-  (GET "/item/:id" [id]
-    (views/edit-item-modal (db/select-item id)))
   (POST "/item/" {params :params}
     (if-let [errors (items/validate params)]
       (-> (response/response errors)
@@ -22,6 +22,8 @@
       (do
         (db/insert :items [(items/parse params)])
         (response/response {}))))
+  (GET "/item/:id" [id]
+    (views/edit-item-modal (db/select-item id)))
   (POST "/item/:id" {params :params}
     (if-let [errors (items/validate params)]
       (-> (response/response errors)
@@ -33,6 +35,14 @@
                             ["id = ?" (Integer/parseInt (:id params))]
                             (items/parse item-params)))
         (response/response {}))))
+  (GET "/item/:id/upload" [id]
+    (views/upload-modal id))
+  (POST "/item/:id/upload" [id photo_by image-data]
+    (let [{:keys [content-type filename size tempfile]} image-data]
+      (s3/put-object (images/s3-key id filename) tempfile)
+      (s3/put-object (images/s3-key id filename "thumbnail")
+                     (images/thumbnail tempfile)))
+    "")
   (POST "/item/:id/delete" [id]
     (db/delete-rows :items ["id = ?" (Integer/parseInt id)])
     ""))

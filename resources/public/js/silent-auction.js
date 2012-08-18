@@ -6,7 +6,7 @@ $(function() {
     setTimeout(function () {
       $win.scrollTop($win.scrollTop() - 47);
     }, 0);
-  })
+  });
 
   function modalSave() {
     var $form = $(this).parents('.modal').find('form');
@@ -50,7 +50,15 @@ $(function() {
   });
 
   $('.btn.upload').click(function() {
-    $('#upload-modal').modal();
+    var $this = $(this);
+    $.get($this.attr('href'), {}, function(html) {
+      var $modal = $('#upload-modal');
+      $modal.html(html).modal({});
+      $modal.find('.save').click(function() {
+        $modal.find('form').submit();
+        return false;
+      });
+    });
     return false;
   });
 
