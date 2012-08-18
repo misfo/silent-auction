@@ -27,9 +27,11 @@
       (-> (response/response errors)
         (assoc :status 400))
       (do
-        (db/update-values :items
-                          ["id = ?" (Integer/parseInt (:id params))]
-                          (items/parse params))
+        ; assume nil if checkbox isn't checked
+        (let [item-params (update-in params [:price] identity)]
+          (db/update-values :items
+                            ["id = ?" (Integer/parseInt (:id params))]
+                            (items/parse item-params)))
         (response/response {}))))
   (POST "/item/:id/delete" [id]
     (db/delete-rows :items ["id = ?" (Integer/parseInt id)])
