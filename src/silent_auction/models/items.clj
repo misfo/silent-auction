@@ -36,7 +36,11 @@
   (valip/validate it
     [:title present? "Must be supplied"]
     [:donor present? "Must be supplied"]
-    [:price price-types "Unknown value"]
+    [:price
+     (if (str/blank? (:estimated_market_value it))
+       price-types
+       (constantly true))
+     "A price must be specified"]
     [:estimated_market_value valid-usd? "Must be a valid US dollar amount"]
     [:estimated_market_value
      #(or (str/blank? (:price it)) (str/blank? %))
