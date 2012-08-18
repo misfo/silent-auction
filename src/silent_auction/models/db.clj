@@ -50,3 +50,8 @@
   (sql/with-connection connection
     (sql/update-values table where-params record)))
 
+(defn update-item
+  [id record]
+  (update-values :items
+                 ["id = ?" (Integer/parseInt id)]
+                 record))

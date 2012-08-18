@@ -31,18 +31,18 @@
       (do
         ; assume nil if checkbox isn't checked
         (let [item-params (update-in params [:price] identity)]
-          (db/update-values :items
-                            ["id = ?" (Integer/parseInt (:id params))]
-                            (items/parse item-params)))
+          (db/update-item (:id params) (items/parse item-params)))
         (response/response {}))))
   (GET "/item/:id/upload" [id]
     (views/upload-modal id))
   (POST "/item/:id/upload" [id photo_by image-data]
-    (let [{:keys [content-type filename size tempfile]} image-data]
+    (let [{:keys [content-type filename size tempfile]} image-data
+          thumb-filename (images/s3-key id filename "thumbnail")]
       (s3/put-object (images/s3-key id filename) tempfile)
-      (s3/put-object (images/s3-key id filename "thumbnail")
-                     (images/thumbnail tempfile)))
-    "")
+      (s3/put-object thumb-filename (images/thumbnail tempfile))
+      ;(db/update-item id {:photo_by photo_by, :thumbnail_url thumb-filename})
+      )
+    (response/redirect-after-post "/"))
   (POST "/item/:id/delete" [id]
     (db/delete-rows :items ["id = ?" (Integer/parseInt id)])
     ""))

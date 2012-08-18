@@ -47,7 +47,14 @@
             (sql/do-commands "ALTER TABLE items ADD COLUMN price varchar")))
     :down (fn [connection]
             (sql/with-connection connection
-              (sql/do-commands "ALTER TABLE items DROP COLUMN price")))}])
+              (sql/do-commands "ALTER TABLE items DROP COLUMN price")))}
+   {:id "add-image-columns"
+    :up (fn [connection]
+          (sql/with-connection connection
+            (sql/do-commands "ALTER TABLE items ADD COLUMN thumbnail_url varchar, ADD COLUMN photo_by varchar")))
+    :down (fn [connection]
+            (sql/with-connection connection
+              (sql/do-commands "ALTER TABLE items DROP COLUMN thumbnail_url, DROP COLUMN photo_by")))}])
 
 
 (defn -main
@@ -55,3 +62,4 @@
   (println "\nMigrating database...")
   (ragtime/migrate-all db/connection migrations)
   (println "Done."))
+
