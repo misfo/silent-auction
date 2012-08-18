@@ -1,6 +1,7 @@
 (ns silent-auction.migrations
   (:require [clojure.java.jdbc :as sql]
             [ragtime.core :as ragtime]
+            [ragtime.strategy :as strategy]
             ragtime.sql.postgres
             [silent-auction.models.db :as db]))
 
@@ -59,6 +60,11 @@
 
 (defn -main
   []
+  (doseq [migration migrations]
+    (ragtime/remember-migration migration))
+  (let [applied  (ragtime/applied-migrations db/connection)]
+    (println "applied:\n" applied)
+    (println "strategy:" (strategy/raise-error applied migrations)))
   (println "\nMigrating database...")
   (ragtime/migrate-all db/connection migrations)
   (println "Done."))
