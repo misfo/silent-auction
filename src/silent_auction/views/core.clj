@@ -44,7 +44,7 @@
   [:div.row.item
    [:div.span4
     [:div.thumbnail
-     [:img {:src (or thumbnail_url "http://placehold.it/360x286")}]
+     [:img {:src (or thumbnail_url "/img/CH_BannerPenTypeNeverland.jpg")}]
      (when photo_by [:div.caption (str "Photo by " photo_by)])]]
    [:div.span8
     [:h2 title
