@@ -37,11 +37,11 @@
     (views/upload-modal id))
   (POST "/item/:id/upload" [id photo_by image-data]
     (let [{:keys [content-type filename size tempfile]} image-data
-          thumb-filename (images/s3-key id filename "thumbnail")]
-      (s3/put-object (images/s3-key id filename) tempfile)
-      (s3/put-object thumb-filename (images/thumbnail tempfile))
-      ;(db/update-item id {:photo_by photo_by, :thumbnail_url thumb-filename})
-      )
+          thumb-key (images/s3-key id filename "thumbnail")]
+      (s3/put-public-object (images/s3-key id filename) tempfile)
+      (s3/put-public-object thumb-key (images/thumbnail tempfile))
+      (db/update-item id {:photo_by photo_by
+                          :thumbnail_url (s3/url thumb-key)}))
     (response/redirect-after-post "/"))
   (POST "/item/:id/delete" [id]
     (db/delete-rows :items ["id = ?" (Integer/parseInt id)])
