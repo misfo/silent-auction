@@ -51,12 +51,18 @@ $(function() {
 
   $('.btn.upload').click(function() {
     var $this = $(this);
+
     $.get($this.attr('href'), {}, function(html) {
       var $modal = $('#upload-modal');
+
       $modal.html(html).modal({});
-      $modal.find('.save').click(function() {
-        $modal.find('form').submit();
-        return false;
+      $modal.find('.save').click(function(e) {
+        var $saveBtn = $(this);
+        if (!$saveBtn.hasClass('disabled')) {
+          $saveBtn.button('loading');
+          $modal.find('form').submit();
+        }
+        e.preventDefault();
       });
     });
     return false;

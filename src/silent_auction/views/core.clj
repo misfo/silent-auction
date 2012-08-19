@@ -29,6 +29,7 @@
     [:title "CHA Silent Auction"]
     (include-bootstrap)
     (include-js "/js/jquery-1.7.2.min.js"
+                "/js/bootstrap-button.js"
                 "/js/bootstrap-modal.js"
                 "/js/silent-auction.js")
     (include-css "/css/silent-auction.css")]
@@ -154,7 +155,7 @@
             (control-group "Photo by"
                            [:input.input-xlarge {:type "text"
                                                  :name "photo_by"}])]]
-          [:a.btn.btn-primary.save "Upload Image"])))
+          [:a.btn.btn-primary.save {:data-loading-text "Uploading..."} "Upload Image"])))
 
 (defn items [itms]
   (let [itms-by-category (partition-by :category_name itms)]
