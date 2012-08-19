@@ -15,7 +15,7 @@
   [key value]
   (put-object key value)
   (update-object-acl key
-    (grant :all-users :read)))
+    (s3/grant :all-users :read)))
 
 (defn list-item-objects
   [item-id]

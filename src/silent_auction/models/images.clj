@@ -1,7 +1,7 @@
 (ns silent-auction.models.images
   (:require [nl.zeekat.imajine.core :as imajine]))
 
-(def thumbnail-dimensions [360 286])
+(def thumbnail-dimensions [360 720])
 
 (defn s3-key
   ([item-id orig-filename]

@@ -2,7 +2,8 @@
   (:use compojure.core
         [ring.middleware.json :only [wrap-json-response]]
         hiccup.bootstrap.middleware)
-  (:require [ring.util.response :as response]
+  (:require [clojure.string :as str]
+            [ring.util.response :as response]
             [compojure.handler :as handler]
             [compojure.route :as route]
             [silent-auction.urls :as urls]
@@ -40,7 +41,7 @@
           thumb-key (images/s3-key id filename "thumbnail")]
       (s3/put-public-object (images/s3-key id filename) tempfile)
       (s3/put-public-object thumb-key (images/thumbnail tempfile))
-      (db/update-item id {:photo_by photo_by
+      (db/update-item id {:photo_by (when-not (str/blank? photo_by) photo_by)
                           :thumbnail_url (s3/url thumb-key)}))
     (response/redirect-after-post "/"))
   (POST "/item/:id/delete" [id]

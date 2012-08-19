@@ -40,12 +40,12 @@
   (for [p (str/split text #"(\n\s*){2,}")]
     [:p p]))
 
-(defn item [{:keys [id title description donor price estimated_market_value fineprint]}]
+(defn item [{:keys [id title description donor price estimated_market_value fineprint thumbnail_url photo_by]}]
   [:div.row.item
    [:div.span4
     [:div.thumbnail
-     [:img {:src "http://placehold.it/360x286"}]
-     [:div.caption "Photo by Patches O'Houlihan"]]]
+     [:img {:src (or thumbnail_url "http://placehold.it/360x286")}]
+     (when photo_by [:div.caption (str "Photo by " photo_by)])]]
    [:div.span8
     [:h2 title
          "&nbsp;"
