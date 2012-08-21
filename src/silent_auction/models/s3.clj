@@ -1,6 +1,8 @@
 (ns silent-auction.models.s3
-  (:use [environ.core :only [env]])
-  (:require [aws.sdk.s3 :as s3]))
+  (:use [environ.core :only [env]]
+        [ring.util.codec :only [url-encode]])
+  (:require [clojure.string :as str]
+            [aws.sdk.s3 :as s3]))
 
 (def cred {:access-key (env :aws-access-key)
            :secret-key (env :aws-secret-key)})
@@ -23,5 +25,6 @@
 
 (defn url
   [key]
-  (str "http://s3.amazonaws.com/" bucket "/" key))
+  (let [encoded-key (str/join "/" (map url-encode (str/split key #"/")))]
+    (str "http://s3.amazonaws.com/" bucket "/" encoded-key)))
 
