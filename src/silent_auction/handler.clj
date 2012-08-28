@@ -1,5 +1,5 @@
 (ns silent-auction.handler
-  (:use [clojure.pprint :only [pprint]] compojure.core
+  (:use compojure.core
         [ring.middleware.json :only [wrap-json-response]]
         hiccup.bootstrap.middleware)
   (:require [clojure.string :as str]
