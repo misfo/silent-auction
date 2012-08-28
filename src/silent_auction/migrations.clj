@@ -55,7 +55,17 @@
             (sql/do-commands "ALTER TABLE items ADD COLUMN thumbnail_url varchar, ADD COLUMN photo_by varchar")))
     :down (fn [connection]
             (sql/with-connection connection
-              (sql/do-commands "ALTER TABLE items DROP COLUMN thumbnail_url, DROP COLUMN photo_by")))}])
+              (sql/do-commands "ALTER TABLE items DROP COLUMN thumbnail_url, DROP COLUMN photo_by")))}
+   {:id "create-users"
+    :up (fn [connection]
+          (sql/with-connection connection
+            (sql/create-table :users
+                              [:email            :varchar "NOT NULL"]
+                              [:crypted_password :varchar "NOT NULL"]
+                              [:created_at       :timestamp "NOT NULL" "DEFAULT CURRENT_TIMESTAMP"])))
+    :down (fn [connection]
+            (sql/with-connection connection
+              (sql/drop-table :users)))}])
 
 
 (defn -main

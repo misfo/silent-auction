@@ -33,15 +33,13 @@
                 "/js/bootstrap-modal.js"
                 "/js/silent-auction.js")
     (include-css "/css/silent-auction.css")]
-   [:body
-    (navbar)
-    [:div.container content]]))
+   [:body content]))
 
 (defn- paragraphs [text]
   (for [p (str/split text #"(\n\s*){2,}")]
     [:p p]))
 
-(defn item [{:keys [id title description donor price estimated_market_value fineprint thumbnail_url photo_by]}]
+(defn item [authentication {:keys [id title description donor price estimated_market_value fineprint thumbnail_url photo_by]}]
   [:div.row.item
    [:div.span4
     [:div.thumbnail
@@ -49,12 +47,14 @@
      (when photo_by [:div.caption (str "Photo by " photo_by)])]]
    [:div.span8
     [:h2 title
+      (when authentication
+        (list
          "&nbsp;"
          [:a.btn.btn-primary.edit-item {:href (urls/edit-item id)} "Edit"]
          "&nbsp;"
          [:a.btn.btn-primary.upload {:href (urls/upload-image id)} "Upload"]
          "&nbsp;"
-         [:a.btn.btn-danger.delete-item {:href (urls/delete-item id)} "Delete"]]
+         [:a.btn.btn-danger.delete-item {:href (urls/delete-item id)} "Delete"]))]
     (paragraphs description)
     [:p "Donated by " [:strong donor]]
     (cond
@@ -63,11 +63,11 @@
                              [:strong (str "$" estimated_market_value)]])
     [:p [:small fineprint]]]])
 
-(defn item-category [itms]
+(defn item-category [authentication itms]
   (let [cat (:category_name (first itms))]
     [:section {:id (category-id cat)}
       [:div.page-header [:h1 cat]]
-      (map item itms)]))
+      (map (partial item authentication) itms)]))
 
 (defn- category-option [selected-id {:keys [id name]}]
   [:option {:value id :selected (= id selected-id)} name])
@@ -157,12 +157,30 @@
                                                  :name "photo_by"}])]]
           [:a.btn.btn-primary.save {:data-loading-text "Uploading..."} "Upload Image"])))
 
-(defn items [itms]
+(defn items [itms authentication]
   (let [itms-by-category (partition-by :category_name itms)]
     (layout
-     [:a#create-item.btn.btn-primary {:href (urls/new-item)} "Create New Item"]
-     [:div#item-modal.modal.hide (create-item-modal)]
-     [:div#item-modal.modal.hide]
-     [:div#upload-modal.modal.hide]
-     (map item-category itms-by-category))))
+     (navbar)
+     [:div.container
+      (when authentication
+        (list
+         [:a#create-item.btn.btn-primary {:href (urls/new-item)} "Create New Item"]
+         "&nbsp;"
+         [:a#logout.btn.btn-danger {:href urls/logout} "Log Out"]
+         [:div#item-modal.modal.hide (create-item-modal)]
+         [:div#item-modal.modal.hide]
+         [:div#upload-modal.modal.hide]))
+      (map (partial item-category authentication) itms-by-category)])))
+
+(defn login []
+  (layout
+   [:div.container
+    [:div.offset3
+     [:form.form-horizontal {:action urls/login, :method "post"}
+      (control-group "Email"
+                     [:input {:type "text", :name "username"}])
+      (control-group "Password"
+                     [:input {:type "password", :name "password"}])
+      (control-group nil
+                     [:button.btn {:type "submit"} "Sign in"])]]]))
 

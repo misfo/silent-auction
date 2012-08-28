@@ -1,9 +1,12 @@
 (ns silent-auction.handler
-  (:use compojure.core
+  (:use [clojure.pprint :only [pprint]] compojure.core
         [ring.middleware.json :only [wrap-json-response]]
         hiccup.bootstrap.middleware)
   (:require [clojure.string :as str]
             [ring.util.response :as response]
+            [cemerick.friend :as friend]
+            (cemerick.friend [workflows :as workflows]
+                             [credentials :as creds])
             [compojure.handler :as handler]
             [compojure.route :as route]
             [silent-auction.urls :as urls]
@@ -48,12 +51,24 @@
     (db/delete-rows :items ["id = ?" (Integer/parseInt id)])
     ""))
 
+(defn load-user-creds
+  [email]
+  (if-let [user (db/select-user email)]
+    {:username (:email user)
+     :password (:crypted_password user)
+     :roles #{:admin}}))
+
 (def admin-app
   (-> admin-routes
+    (friend/wrap-authorize #{:admin})
     wrap-json-response))
 
 (defroutes app-routes
-  (GET "/" [] (views/items (db/select-items)))
+  (GET "/" r
+    (let [identity (get-in r [:session :cemerick.friend/identity])]
+      (views/items (db/select-items) (when identity (friend/current-authentication identity)))))
+  (GET "/login" [] (views/login))
+  (friend/logout (GET "/logout" [] (response/redirect "/")))
   (context urls/admin-root [] admin-app)
   (route/resources "/")
   (route/not-found "Not Found"))
@@ -61,4 +76,8 @@
 (def app
   (-> app-routes
     wrap-bootstrap-resources
+    (friend/authenticate {:credential-fn (partial creds/bcrypt-credential-fn load-user-creds)
+                          :workflows [(workflows/interactive-form)]
+                          :login-uri "/login"
+                          :default-landing-uri "/"})
     handler/site))

@@ -21,6 +21,13 @@
       ["SELECT * FROM items WHERE id = ?" (Integer/parseInt id)]
       (first items))))
 
+(defn select-user
+  [email]
+  (sql/with-connection connection
+    (sql/with-query-results users
+      ["SELECT * FROM users WHERE email = ?" email]
+      (first users))))
+
 (def categories
   (memoize (fn []
     (sql/with-connection connection
