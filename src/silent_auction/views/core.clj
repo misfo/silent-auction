@@ -170,6 +170,7 @@
          [:div#item-modal.modal.hide (create-item-modal)]
          [:div#item-modal.modal.hide]
          [:div#upload-modal.modal.hide]))
+      [:p.lead "Here are some of the auction items that you will see at the Storyland Ball this year..."]
       (map (partial item-category authentication) itms-by-category)])))
 
 (defn login []
