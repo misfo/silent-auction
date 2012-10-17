@@ -56,7 +56,7 @@
          "&nbsp;"
          [:a.btn.btn-danger.delete-item {:href (urls/delete-item id)} "Delete"]))]
     (paragraphs description)
-    [:p "Donated by " [:strong donor]]
+    (when-not (str/blank? donor) [:p "Donated by " [:strong donor]])
     (cond
      (not (str/blank? price)) [:p [:strong (str/capitalize price)]]
      estimated_market_value [:p "Estimated market value: "

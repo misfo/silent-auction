@@ -35,7 +35,7 @@
   [it]
   (valip/validate it
     [:title present? "Must be supplied"]
-    [:donor present? "Must be supplied"]
+    ; [:donor present? "Must be supplied"]
     [:price
      (if (str/blank? (:estimated_market_value it))
        price-types
